@@ -1,3 +1,4 @@
+#! /usr/bin/ruby
 #http://zetcode.com/db/mysqlrubytutorial/
 #mysql -h csci403.c99q7trvwetr.us-west-2.rds.amazonaws.com -P3306 -u jsmith -p
 require 'mysql'
