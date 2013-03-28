@@ -1,4 +1,4 @@
-#! /usr/bin/ruby
+#! /usr/bin/env ruby
 #Chris Card
 #http://zetcode.com/db/mysqlrubytutorial/
 #mysql -h csci403.c99q7trvwetr.us-west-2.rds.amazonaws.com -P3306 -u ccard -p
