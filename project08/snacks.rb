@@ -52,7 +52,7 @@ class Snack < ActiveRecord::Base
   has_and_belongs_to_many :machines #auto joins the two tables based on machines_tables
   has_and_belongs_to_many :users
 
-  validates :caloires, :numericality => { :greater_than => -1}
+  validates :calories, :numericality => { :greater_than => -1}
 end
 
 
@@ -117,27 +117,34 @@ end
 
 
 #------------------------------------------------------------------
-# This lists all snacks and machines that they are related to
+# This adds a new snack to the database
 def add_snack
   puts "Snack's name:"
   name = gets
   name = name.gsub("\n","")
+  
   puts "Snack's manufacturer:"
   manuf = gets
   manuf = manuf.gsub("\n","")
+
   puts "Snack's calories:"
   cal = gets
-  puts "Enter machines id number:"
+
   machines = Machine.all
   machines.each do |machine|
     puts "id: #{machine.id}, located at #{machine.description} in #{machine.building.name}"
   end
+
+  puts "Enter machines id number:"
   id = gets
 
-  snack = Snack.new :name => name, :manufacturer => manuf, :calories => cal
+  snack = Snack.create :name => name, :description => manuf, :calories => cal
   machine = Machine.find id
   snack.machines << machine
 
+  success = "Success: snack added to database!"
+  fail = "Fail: Cant have negative calories: snack not added to database!"
+  puts snack.valid? ? success : fail
 end
 
 def main_menu
