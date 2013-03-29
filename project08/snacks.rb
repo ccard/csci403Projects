@@ -28,21 +28,18 @@ class User < ActiveRecord::Base
 end
 
 
-
-
 # TODO: Your class definitions should be placed here.
 
 #------------------------------------------------------------------
 # This class is for buildings table from the data base
 class Building < ActiveRecord::Base
-  has_many :machines
-
+  has_many :machines #many side of one to many
 end
 
 #------------------------------------------------------------------
 # This class is for the machines table in data base
 class Machine < ActiveRecord::Base
-  belongs_to :building
+  belongs_to :building #one side of one to many
   has_and_belongs_to_many :snacks #auto joins the two tables based on machines_tables
 end
 
@@ -50,9 +47,12 @@ end
 # This class is for the snacks table in the data base
 class Snack < ActiveRecord::Base
   has_and_belongs_to_many :machines #auto joins the two tables based on machines_tables
-  has_and_belongs_to_many :users
+  has_and_belongs_to_many :users #auto joins the two tables based on machines_tables
 
+  #validation of calories has to be numeric and greater than one or not valid entry
   validates :calories, :numericality => { :greater_than => -1}
+  #name has to be at least length 1 and can't be blank
+  validates :name, :length => {:minimum => 1}, :allow_blank => false
 end
 
 
@@ -100,24 +100,28 @@ end
 
 #------------------------------------------------------------------
 # This finds the snack and lists all buildings and machines that its
-#in
+# in
 def find_snack
   puts "What snack do you want to find?"
   name = gets
+
+  #returns the list of all snacks with the name of name (string is read in with \n had to remove it)
   snacks = Snack.find_all_by_name name.gsub("\n","")
+
+  #if the snacks list is empty then prints out not found error other wise iterate over the
+  #list
+  snacks.empty? ? "#{puts "There is no such snack '#{name.gsub("\n","")}' in the system!"}" : 
   snacks.each do |snack|
     snack.machines.each do |machine|
       puts "In machine #{machine.serial_number} located in #{machine.building.name} building"
     end
   end
-
-  rescue Exception => e 
-  puts "There is no such snack '#{name.gsub("\n","")}' in the system!"
 end
 
 
 #------------------------------------------------------------------
-# This adds a new snack to the database
+# This adds a new snack to the database or it doesn't if the
+# provided calories is negative
 def add_snack
   puts "Snack's name:"
   name = gets
@@ -130,20 +134,26 @@ def add_snack
   puts "Snack's calories:"
   cal = gets
 
+  #lists all machines for user to select from
+  puts "Machines:"
   machines = Machine.all
   machines.each do |machine|
-    puts "id: #{machine.id}, located at #{machine.description} in #{machine.building.name}"
+    puts "id: #{machine.id} => machine #{machine.serial_number} located at #{machine.description} in #{machine.building.name}"
   end
-
   puts "Enter machines id number:"
   id = gets
 
+  #creates a new snack
   snack = Snack.create :name => name, :description => manuf, :calories => cal
   machine = Machine.find id
   snack.machines << machine
 
   success = "Success: snack added to database!"
-  fail = "Fail: Cant have negative calories: snack not added to database!"
+  #This is the fail method only has a conditional in it so it doesn't create errors
+  fail = "Fail: #{snack.valid? ? "" : "calories can't be negative : name cant be blank" }: 
+          snack not added to database!"
+
+  #writes out success or fail depending on the validity of snack
   puts snack.valid? ? success : fail
 end
 
