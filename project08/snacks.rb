@@ -43,22 +43,13 @@ end
 # This class is for the machines table in data base
 class Machine < ActiveRecord::Base
   belongs_to :building
-  has_many :machines_snacks
-  has_many :snacks, :through => :machines_snacks
-end
-
-#------------------------------------------------------------------
-# This class is for snacks to machines
-class MachinesSnack < ActiveRecord::Base
-  belongs_to :machines, :foreign_key => 'machine_id', :class_name => 'Machine'
-  belongs_to :snacks, :foreign_key => 'snack_id'
+  has_and_belongs_to_many :snacks
 end
 
 #------------------------------------------------------------------
 # This class is for the snacks table in the data base
 class Snack < ActiveRecord::Base
-  has_many :machines_snacks
-  has_many :machines, :through => :machines_snacks
+  has_and_belongs_to_many :machines
 end
 
 
