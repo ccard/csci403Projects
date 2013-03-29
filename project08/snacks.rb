@@ -20,7 +20,7 @@ ActiveRecord::Base.establish_connection(
 # Class definitions
 #
 class User < ActiveRecord::Base
-
+  has_and_belongs_to_many :snacks
   def to_s
     name
   end
@@ -43,13 +43,16 @@ end
 # This class is for the machines table in data base
 class Machine < ActiveRecord::Base
   belongs_to :building
-  has_and_belongs_to_many :snacks
+  has_and_belongs_to_many :snacks #auto joins the two tables based on machines_tables
 end
 
 #------------------------------------------------------------------
 # This class is for the snacks table in the data base
 class Snack < ActiveRecord::Base
-  has_and_belongs_to_many :machines
+  has_and_belongs_to_many :machines #auto joins the two tables based on machines_tables
+  has_and_belongs_to_many :users
+
+  validates :caloires, :numericality => { :greater_than => -1}
 end
 
 
@@ -95,6 +98,29 @@ def list_snacks
   end
 end
 
+#------------------------------------------------------------------
+# This finds the snack and lists all buildings and machines that its
+#in
+def find_snack
+  puts "What snack do you want to find?"
+  name = gets
+  snacks = Snack.find_all_by_name name.gsub("\n","")
+  snacks.each do |snack|
+    snack.machines.each do |machine|
+      puts "In machine #{machine.serial_number} located in #{machine.building.name} building"
+    end
+  end
+
+#------------------------------------------------------------------
+# This lists all snacks and machines that they are related to
+def add_snack
+  
+
+end
+
+rescue Exception => e 
+  puts "There is no such snack '#{name.gsub("\n","")}' in the system!"
+end
 
 def main_menu
   puts "\nMain Menu."
@@ -123,7 +149,7 @@ def execute_command(command)
     list_users
   when "E"
     puts "\nFind a Snack"
-    # TDOO find_snack
+    find_snack
   when "F"
     puts "\nAdding a new Snack"
     # TDOO add_snack
