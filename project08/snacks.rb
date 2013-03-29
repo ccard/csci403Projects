@@ -111,15 +111,33 @@ def find_snack
     end
   end
 
+  rescue Exception => e 
+  puts "There is no such snack '#{name.gsub("\n","")}' in the system!"
+end
+
+
 #------------------------------------------------------------------
 # This lists all snacks and machines that they are related to
 def add_snack
-  
+  puts "Snack's name:"
+  name = gets
+  name = name.gsub("\n","")
+  puts "Snack's manufacturer:"
+  manuf = gets
+  manuf = manuf.gsub("\n","")
+  puts "Snack's calories:"
+  cal = gets
+  puts "Enter machines id number:"
+  machines = Machine.all
+  machines.each do |machine|
+    puts "id: #{machine.id}, located at #{machine.description} in #{machine.building.name}"
+  end
+  id = gets
 
-end
+  snack = Snack.new :name => name, :manufacturer => manuf, :calories => cal
+  machine = Machine.find id
+  snack.machines << machine
 
-rescue Exception => e 
-  puts "There is no such snack '#{name.gsub("\n","")}' in the system!"
 end
 
 def main_menu
@@ -152,7 +170,7 @@ def execute_command(command)
     find_snack
   when "F"
     puts "\nAdding a new Snack"
-    # TDOO add_snack
+    add_snack
   when "Q"
     puts "Quitting... buh-bye."
   else
