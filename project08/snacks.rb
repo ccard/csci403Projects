@@ -98,7 +98,7 @@ def list_snacks
   snacks = Snack.all
   snacks.each do |snack|
     puts "#{snack.name}"
-    snack.machines_snacks.first
+    puts"#{snack.machines.others.size}"
     snack.machines.each do |machine|
       puts "- #{machine.serial_number} in #{machine.building.name}"
     end
