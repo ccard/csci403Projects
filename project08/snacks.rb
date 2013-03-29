@@ -7,7 +7,7 @@ require 'logger'
 #
 # Configuration
 #
-ActiveRecord::Base.logger = Logger.new(STDOUT) # Comment this line to turn off log output
+#ActiveRecord::Base.logger = Logger.new(STDOUT) # Comment this line to turn off log output
 ActiveRecord::Base.establish_connection(
   :host => 'csci403.c99q7trvwetr.us-west-2.rds.amazonaws.com',
   :username => 'ccard',
@@ -27,17 +27,39 @@ class User < ActiveRecord::Base
 
 end
 
+
+
+
+# TODO: Your class definitions should be placed here.
+
+#------------------------------------------------------------------
+# This class is for buildings table from the data base
 class Building < ActiveRecord::Base
   has_many :machines
 
 end
 
+#------------------------------------------------------------------
+# This class is for the machines table in data base
 class Machine < ActiveRecord::Base
   belongs_to :building
+  has_many :machines_snacks
+  has_many :snacks, :through => :machines_snacks
 end
 
+#------------------------------------------------------------------
+# This class is for snacks to machines
+class MachineSnack < ActiveRecord::Base
+  belongs_to :machines, :foreign_key => 'machine_id'
+  belongs_to :snacks, :foreign_key => 'snack_id'
+end
 
-# TODO: Your class definitions should be placed here.
+#------------------------------------------------------------------
+# This class is for the snacks table in the data base
+class Snack < ActiveRecord::Base
+  has_many :machines_snacks
+  has_many :machines, :through => :machines_snacks
+end
 
 
 #
@@ -50,14 +72,39 @@ def list_users
   end
 end
 
+# TODO: Your other menu-driven functions should be placed here.
 
+#------------------------------------------------------------------
+# This lists all buildings and number of machines they have
 def list_buildings
   buildings = Building.all
   buildings.each do |building|
-    puts "#{building.name} (#{building.machines.count})"
+    puts "#{building.name} (#{building.machines.count} machines)"
   end
 end
-# TODO: Your other menu-driven functions should be placed here.
+
+#------------------------------------------------------------------
+# This lists machines their description and what building their in
+def list_machines
+  machines = Machine.all
+  machines.each do |machine|
+    puts "#{machine.serial_number}, #{machine.description} (#{machine.building.name})"
+  end
+end
+
+#------------------------------------------------------------------
+# This lists all snacks and machines that they are related to
+def list_snacks
+  snacks = Snack.all
+  snacks.each do |snack|
+    puts "#{snack.name}"
+    puts "#{snack.machines.size}"
+    snack.machines.each do |machine|
+      puts "- #{machine.serial_number} in #{machine.building.name}"
+    end
+  end
+end
+
 
 def main_menu
   puts "\nMain Menu."
@@ -77,10 +124,10 @@ def execute_command(command)
     list_buildings
   when "B"
     puts "\nListing Machines"
-    # TODO list_machines
+    list_machines
   when "C"
     puts "\nListing Snacks"
-    # TDOO list_snacks
+    list_snacks
   when "D"
     puts "\nListing Users"
     list_users
