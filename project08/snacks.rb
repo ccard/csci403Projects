@@ -49,8 +49,8 @@ end
 
 #------------------------------------------------------------------
 # This class is for snacks to machines
-class MachineSnack < ActiveRecord::Base
-  belongs_to :machines, :foreign_key => 'machine_id'
+class MachinesSnack < ActiveRecord::Base
+  belongs_to :machines, :foreign_key => 'machine_id', :class_name => 'Machine'
   belongs_to :snacks, :foreign_key => 'snack_id'
 end
 
@@ -98,7 +98,6 @@ def list_snacks
   snacks = Snack.all
   snacks.each do |snack|
     puts "#{snack.name}"
-    puts"#{snack.machines.others.size}"
     snack.machines.each do |machine|
       puts "- #{machine.serial_number} in #{machine.building.name}"
     end
