@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+#Chirs Card
+#Added code to boiler plate
+
 require 'rubygems'
 require 'active_record'
 require 'logger'
