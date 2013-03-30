@@ -105,7 +105,8 @@ def find_snack
   puts "What snack do you want to find?"
   name = gets
 
-  #returns the list of all snacks with the name of name (string is read in with \n had to remove it)
+  #returns the list of all snacks with the name of name 
+  #(string is read in with \n had to remove it)
   snacks = Snack.find_all_by_name name.gsub("\n","")
 
   #if the snacks list is empty then prints out not found error other wise iterate over the
