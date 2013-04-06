@@ -106,15 +106,15 @@ end
 # in
 def find_snack
   puts "What snack do you want to find?"
-  name = gets
+  name = gets.chomp
 
   #returns the list of all snacks with the name of name 
   #(string is read in with \n had to remove it)
-  snacks = Snack.find_all_by_name name.gsub("\n","")
+  snacks = Snack.find_all_by_name name
 
   #if the snacks list is empty then prints out not found error other wise iterate over the
   #list
-  snacks.empty? ? "#{puts "There is no such snack '#{name.gsub("\n","")}' in the system!"}" : 
+  snacks.empty? ? "#{puts "There is no such snack '#{name}' in the system!"}" : 
   snacks.each do |snack|
     snack.machines.each do |machine|
       puts "In machine #{machine.serial_number} located in #{machine.building.name} building"
@@ -128,15 +128,13 @@ end
 # provided calories is negative
 def add_snack
   puts "Snack's name:"
-  name = gets
-  name = name.gsub("\n","")
+  name = gets.chomp
   
   puts "Snack's manufacturer:"
-  manuf = gets
-  manuf = manuf.gsub("\n","")
+  manuf = gets.chomp
 
   puts "Snack's calories:"
-  cal = gets
+  cal = gets.chomp
 
   #lists all machines for user to select from
   puts "Machines:"
@@ -145,7 +143,7 @@ def add_snack
     puts "id: #{machine.id} => machine #{machine.serial_number} located at #{machine.description} in #{machine.building.name}"
   end
   puts "Enter machines id number:"
-  id = gets
+  id = gets.chomp
 
   #creates a new snack
   snack = Snack.create :name => name, :description => manuf, :calories => cal
