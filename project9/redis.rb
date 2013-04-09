@@ -33,8 +33,14 @@ end
 
 def incer
 	puts "Increase count"
-	@redis.incr "count"
-	puts "count is now => #{@redis.get "count"}"
+	puts "Enter key of count:"
+	key = gets.chomp
+	begin
+		@redis.incr key
+		puts "count is now => #{@redis.get key}"
+	rescue Redis::CommandError => e
+		puts "No such key or invalid type of key's value"
+	end
 end
 
 def addm
@@ -211,6 +217,18 @@ def valType
 	puts "Type is: #{@redis.type key}"
 end
 
+def decr
+	puts "Decrease count"
+	puts "Enter key of count:"
+	key = gets.chomp
+	begin
+		@redis.decr key
+		puts "count is now => #{@redis.get key}"
+	rescue Redis::CommandError => e
+		puts "No such key or invalid type of key's value"
+	end
+end
+
 def main_menu
   puts "\nMain Menu."
   puts "A. Find obj"
@@ -228,6 +246,7 @@ def main_menu
   puts "M. Rename a key"
   puts "N. Get server time"
   puts "O. Get the type of a keys value"
+  puts "P. Decrement counter"
   puts "Q. Quit"
 end
 
@@ -263,6 +282,8 @@ def execute_command(command)
   	time
   when "O"
   	valType
+  when "P"
+  	decr
   when "Q"
     puts "Quitting... buh-bye."
   else
