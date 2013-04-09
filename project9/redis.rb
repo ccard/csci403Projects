@@ -165,7 +165,7 @@ def getSet
 end
 
 def getKey
-	puts "Get a key matching a pattern"
+	puts "Get all keys matching a pattern"
 	puts "Uses: ? mathes any character only once"
 	puts "      * 0->any number of characters"
 	puts "      [] mathes characters provided and nothing else"
@@ -184,6 +184,33 @@ def getKey
 	end
 end
 
+def rename
+	puts "Rename a key"
+	puts "Enter original key:"
+	orginkey = gets.chomp
+	puts "Enter new key:"
+	newkey = gets.chomp
+
+	begin
+		result = @redis.renamenx orginkey,newkey
+		result ? "#{puts "rename success"}" : "#{puts "rename fail"}"
+	rescue Redis::CommandError => e
+		puts "Invalid rename command"
+	end
+end
+
+def time
+	puts "Get server time"
+	puts "Server time is #{@redis.time}"
+end
+
+def valType
+	puts "Get type of value stored at key"
+	puts "Enter key:"
+	key = gets.chomp
+	puts "Type is: #{@redis.type key}"
+end
+
 def main_menu
   puts "\nMain Menu."
   puts "A. Find obj"
@@ -198,6 +225,9 @@ def main_menu
   puts "J. Find intersection of two sets"
   puts "K. Get a set"
   puts "L. Get a keys matching a pattern"
+  puts "M. Rename a key"
+  puts "N. Get server time"
+  puts "O. Get the type of a keys value"
   puts "Q. Quit"
 end
 
@@ -227,6 +257,12 @@ def execute_command(command)
   	getSet
   when "L"
   	getKey
+  when "M"
+  	rename
+  when "N"
+  	time
+  when "O"
+  	valType
   when "Q"
     puts "Quitting... buh-bye."
   else
