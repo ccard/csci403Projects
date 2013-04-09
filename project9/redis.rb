@@ -8,7 +8,7 @@ require "json"
 
 @redis = Redis.new :host => "pub-redis-13059.us-west-1.1.azure.garantiadata.com", :port => 13059, :password => "wuwnosql403"
 
-
+#Finds the value of a key
 def find
 	begin
 		puts "Find by key:"
@@ -22,6 +22,7 @@ def find
 
 end
 
+#adds a key and a value
 def add
 	puts "Add an element"
 	puts "Enter key:"
@@ -31,6 +32,7 @@ def add
 	@redis.set key, value
 end
 
+#increments the value of a key
 def incer
 	puts "Increase count"
 	puts "Enter key of count:"
@@ -43,6 +45,7 @@ def incer
 	end
 end
 
+#allows user to add multiple keys and values
 def addm
 	x = Hash.new
 	puts "Enter many keys and values(type !end into key to terminate input"
@@ -69,6 +72,7 @@ def addm
 	end
 end
 
+#allows user to append to the value of a key
 def append
 	puts "Append a value to a key"
 	puts "Enter key:"
@@ -79,6 +83,7 @@ def append
 	puts "#{@redis.append key,value}"
 end
 
+#allows user to store a list 
 def storeList
 	puts "Store a list of values"
 	puts "Enter key for list (existing|new):"
@@ -92,6 +97,7 @@ def storeList
 	end
 end
 
+#gets the list stored in a key and prints the elements out
 def getList
 	puts "Get a list"
 	puts "Enter key of list:"
@@ -108,6 +114,7 @@ def getList
 	end
 end
 
+#allows user to get specific element of a list
 def getElement
 	puts "Get an element of a list"
 	puts "Enter key of list:"
@@ -122,6 +129,7 @@ def getElement
 	end
 end
 
+#allows user to create a set
 def createSet
 	puts "Create or add to a set"
 	puts "Enter key for set:"
@@ -141,6 +149,7 @@ def createSet
 	end
 end
 
+#finds the inter section between two sets
 def findIntersecion
 	puts "Find the intersection of 2 sets"
 	puts "Enter key of set 1:"
@@ -155,6 +164,7 @@ def findIntersecion
 	end
 end
 
+#gets the whole set stored in a key
 def getSet
 	puts "Get a set"
 	puts "Enter set key:"
@@ -170,6 +180,7 @@ def getSet
 	end
 end
 
+#allows users to find keys based on a pattern
 def getKey
 	puts "Get all keys matching a pattern"
 	puts "Uses: ? mathes any character only once"
@@ -190,6 +201,7 @@ def getKey
 	end
 end
 
+#allows users to renaim the keys
 def rename
 	puts "Rename a key"
 	puts "Enter original key:"
@@ -205,11 +217,13 @@ def rename
 	end
 end
 
+#returns the time on the server
 def time
 	puts "Get server time"
 	puts "Server time is #{@redis.time}"
 end
 
+#gets the type of the value stored at a key
 def valType
 	puts "Get type of value stored at key"
 	puts "Enter key:"
@@ -217,6 +231,7 @@ def valType
 	puts "Type is: #{@redis.type key}"
 end
 
+#decrements the value stored at a key
 def decr
 	puts "Decrease count"
 	puts "Enter key of count:"
