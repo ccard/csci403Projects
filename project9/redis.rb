@@ -244,6 +244,22 @@ def decr
 	end
 end
 
+def verify
+	puts "Verify that a set contains an element"
+	puts "Enter key of set:"
+	key = gets.chomp
+	puts "Enter value to verify:"
+	value = gets.chomp
+
+	begin
+		has = @redis.sismember key,value 
+		has ? "#{puts "#{value} :is a member of the set"}" :
+		           "#{puts "The set has no memeber: #{value}"}"
+	rescue Redis::CommandError => e
+		puts "The key doesn't map to a set"
+	end
+end
+
 def main_menu
   puts "\nMain Menu."
   puts "A. Find obj"
@@ -262,6 +278,7 @@ def main_menu
   puts "N. Get server time"
   puts "O. Get the type of a keys value"
   puts "P. Decrement counter"
+  puts "R. Verify an element of a set"
   puts "Q. Quit"
 end
 
@@ -299,6 +316,8 @@ def execute_command(command)
   	valType
   when "P"
   	decr
+  when "R"
+  	verify
   when "Q"
     puts "Quitting... buh-bye."
   else
