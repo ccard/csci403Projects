@@ -244,6 +244,7 @@ def decr
 	end
 end
 
+#verifies that a set has a specifc element
 def verify
 	puts "Verify that a set contains an element"
 	puts "Enter key of set:"
@@ -257,6 +258,43 @@ def verify
 		           "#{puts "The set has no memeber: #{value}"}"
 	rescue Redis::CommandError => e
 		puts "The key doesn't map to a set"
+	end
+end
+
+def listRemove
+	puts "Remove an element and a specified number of occurences from a list"
+	puts "Enter key of list:"
+	key = gets.chomp
+	puts "Enter number of occurences to remove (negative to start at tail,"
+	puts "positive to start at head, 0 to remove all occurences"
+	occur = gets.chomp
+	puts "Enter element to remove occurences of:"
+	value = gets.chomp
+
+	begin
+		@redis.lrem key, occur, value
+	rescue Redis::CommandError => e
+		puts "List doesn't exist or it didn't remove the element"
+	end
+end
+
+def listSet
+	puts "Set an element of a list"
+
+	begin
+		puts "Enter key of list:"
+		key = gets.chomp
+		range = @redis.llen key
+		puts "Enter an index between 0 and #{range-1}:"
+		index = gets.chomp
+		puts "Enter value:"
+		value = gets.chomp
+
+		success = @redis.lset key,index,value
+		success ? "#{puts "Was able to set the value at #{index} to #{value}"}" :
+				"#{puts "Operation failed"}"
+	rescue Redis::CommandError => e
+		puts "key dosen't map to a list!"
 	end
 end
 
@@ -279,6 +317,8 @@ def main_menu
   puts "O. Get the type of a keys value"
   puts "P. Decrement counter"
   puts "R. Verify an element of a set"
+  puts "S. Remove an element from a list"
+  puts "T. Set an element of a list"
   puts "Q. Quit"
 end
 
@@ -318,6 +358,10 @@ def execute_command(command)
   	decr
   when "R"
   	verify
+  when "S"
+  	listRemove
+  when "T"
+  	listSet
   when "Q"
     puts "Quitting... buh-bye."
   else
