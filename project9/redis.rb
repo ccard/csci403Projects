@@ -20,7 +20,6 @@ def find
 	rescue Redis::CommandError => e
 		puts "Value for key can not be obtained by gets"
 	end
-
 end
 
 #Adds a key and a value
