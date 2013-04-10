@@ -14,6 +14,7 @@ def find
 		puts "Find by key:"
 		puts "Enter key:"
 		key = gets.chomp
+
 		puts "#{@redis.get key}"
 
 	rescue Redis::CommandError => e
@@ -22,46 +23,57 @@ def find
 
 end
 
-#adds a key and a value
+#Adds a key and a value
 def add
 	puts "Add an element"
 	puts "Enter key:"
 	key = gets.chomp
+
 	puts "Enter value:"
 	value = gets.chomp
+
 	@redis.set key, value
 end
 
-#increments the value of a key
+#Increments the value of a key
 def incer
 	puts "Increase count"
 	puts "Enter key of count:"
 	key = gets.chomp
+
 	begin
 		@redis.incr key
+
 		puts "count is now => #{@redis.get key}"
 	rescue Redis::CommandError => e
 		puts "No such key or invalid type of key's value"
 	end
 end
 
-#allows user to add multiple keys and values
+#Allows user to add multiple keys and values
 def addm
 	x = Hash.new
 	puts "Enter many keys and values(type !end into key to terminate input"
 	puts "Enter key:"
 	key = gets.chomp
+
 	puts "Enter value"
 	value = gets.chomp
+
 	puts ""
 	x[key] = value
+
 	while true
 		puts "Enter key:"
 		key = gets.chomp
+
 		key != "!end" ? "" : break
+
 		puts "Enter value"
 		value = gets.chomp
+
 		puts ""
+
 		x.key?(key) ? "#{puts "The key already exists please try again"}" : "#{x[key] = value}"
 	end
 
@@ -72,18 +84,19 @@ def addm
 	end
 end
 
-#allows user to append to the value of a key
+#Allows user to append to the value of a key
 def append
 	puts "Append a value to a key"
 	puts "Enter key:"
 	key = gets.chomp
+
 	puts "Enter value to append:"
 	value = gets.chomp
 
 	puts "#{@redis.append key,value}"
 end
 
-#allows user to store a list 
+#Allows user to store a list 
 def storeList
 	puts "Store a list of values"
 	puts "Enter key for list (existing|new):"
@@ -92,19 +105,24 @@ def storeList
 	while true
 		puts "Enter value or '!end' to stop input:"
 		value = gets.chomp
+
 		value == "!end" ? break : ""
+
 		@redis.lpush key, value
 	end
 end
 
-#gets the list stored in a key and prints the elements out
+#Gets the list stored in a key and prints the elements out
 def getList
 	puts "Get a list"
 	puts "Enter key of list:"
 	key = gets.chomp
+
 	begin
 		length = @redis.llen key
+
 		list = @redis.lrange key, 0, length
+
 		list.empty? ? "#{puts "there is no such list"}" : 
 				list.each do |element| 
 					puts "#{element}" 
@@ -114,32 +132,38 @@ def getList
 	end
 end
 
-#allows user to get specific element of a list
+#Allows user to get specific element of a list
 def getElement
 	puts "Get an element of a list"
 	puts "Enter key of list:"
 	key = gets.chomp
+
 	begin
 		length = @redis.llen key
+
 		puts "Enter the index you want between 0 and #{length-1}"
 		index = gets.chomp
+
 		puts "Element at #{index} is: #{@redis.lindex key,index}"
+
 	rescue Redis::CommandError => e
 		puts "Either you put in the incorrect index or the key doesn't map to a list"
 	end
 end
 
-#allows user to create a set
+#Allows user to create a set
 def createSet
 	puts "Create or add to a set"
 	puts "Enter key for set:"
 	key = gets.chomp
+
 	begin
 		@redis.smembers key
 
 		while true
 			puts "Enter value or '!end' to terminate input"
 			value = gets.chomp
+
 			value == "!end" ? break : ""
 			@redis.sadd key,value
 		end
@@ -149,22 +173,24 @@ def createSet
 	end
 end
 
-#finds the inter section between two sets
+#Finds the inter section between two sets
 def findIntersecion
 	puts "Find the intersection of 2 sets"
 	puts "Enter key of set 1:"
 	key1 = gets.chomp
+
 	puts "Enter key of set 2:"
 	key2 = gets.chomp
 
 	begin
 		puts "#{@redis.sinter key1,key2}"
+
 	rescue Redis::CommandError => e
 		puts "One of the sets may not exist"
 	end
 end
 
-#gets the whole set stored in a key
+#Gets the whole set stored in a key
 def getSet
 	puts "Get a set"
 	puts "Enter set key:"
@@ -172,6 +198,7 @@ def getSet
 
 	begin
 		members = @redis.smembers key
+
 		members.each do |member|
 			puts "#{member}"
 		end
@@ -180,7 +207,7 @@ def getSet
 	end
 end
 
-#allows users to find keys based on a pattern
+#Allows users to find keys based on a pattern
 def getKey
 	puts "Get all keys matching a pattern"
 	puts "Uses: ? mathes any character only once"
@@ -192,6 +219,7 @@ def getKey
 	begin
 		puts "The matching keys are:"
 		keys = @redis.keys pattern
+
 		keys.empty? ? "#{puts "no keys matching pattern found"}":
 				keys.each do |key|
 					puts "#{key}"
@@ -201,59 +229,66 @@ def getKey
 	end
 end
 
-#allows users to renaim the keys
+#Allows users to renaim the keys
 def rename
 	puts "Rename a key"
 	puts "Enter original key:"
 	orginkey = gets.chomp
+
 	puts "Enter new key:"
 	newkey = gets.chomp
 
 	begin
-		result = @redis.renamenx orginkey,newkey
-		result ? "#{puts "rename success"}" : "#{puts "rename fail"}"
+		success = @redis.renamenx orginkey,newkey
+
+		success ? "#{puts "rename success"}" : "#{puts "rename fail"}"
 	rescue Redis::CommandError => e
 		puts "Invalid rename command"
 	end
 end
 
-#returns the time on the server
+#Returns the time on the server
 def time
 	puts "Get server time"
 	puts "Server time is #{@redis.time}"
 end
 
-#gets the type of the value stored at a key
+#Gets the type of the value stored at a key
 def valType
 	puts "Get type of value stored at key"
 	puts "Enter key:"
 	key = gets.chomp
+
 	puts "Type is: #{@redis.type key}"
 end
 
-#decrements the value stored at a key
+#Decrements the value stored at a key
 def decr
 	puts "Decrease count"
 	puts "Enter key of count:"
 	key = gets.chomp
+
 	begin
 		@redis.decr key
+
 		puts "count is now => #{@redis.get key}"
 	rescue Redis::CommandError => e
 		puts "No such key or invalid type of key's value"
 	end
 end
 
-#verifies that a set has a specifc element
+#Verifies that a set has a specifc element
 def verify
 	puts "Verify that a set contains an element"
 	puts "Enter key of set:"
 	key = gets.chomp
+
 	puts "Enter value to verify:"
 	value = gets.chomp
 
 	begin
-		has = @redis.sismember key,value 
+		has = @redis.sismember key,value
+
 		has ? "#{puts "#{value} :is a member of the set"}" :
 		           "#{puts "The set has no memeber: #{value}"}"
 	rescue Redis::CommandError => e
@@ -261,23 +296,28 @@ def verify
 	end
 end
 
+#Removes a number of occurances of an element from a list
 def listRemove
 	puts "Remove an element and a specified number of occurences from a list"
 	puts "Enter key of list:"
 	key = gets.chomp
+
 	puts "Enter number of occurences to remove (negative to start at tail,"
 	puts "positive to start at head, 0 to remove all occurences"
 	occur = gets.chomp
+
 	puts "Enter element to remove occurences of:"
 	value = gets.chomp
 
 	begin
 		@redis.lrem key, occur, value
+
 	rescue Redis::CommandError => e
 		puts "List doesn't exist or it didn't remove the element"
 	end
 end
 
+#Sets a specified element of a list to a new value
 def listSet
 	puts "Set an element of a list"
 
@@ -295,6 +335,22 @@ def listSet
 				"#{puts "Operation failed"}"
 	rescue Redis::CommandError => e
 		puts "key dosen't map to a list!"
+	end
+end
+
+#Pops an element off the front of a list
+def listPop
+	puts "Pop an element of the front of a list"
+	puts "Enter key of list:"
+	key = gets.chomp
+
+	begin
+		element = @redis.lpop key
+		element.empty? ? "#{puts "no elements to pop"}" :
+					"#{puts "Element poped is: #{element}"}"
+
+	rescue Redis::CommandError => e
+		puts "Key doesn't map to list"
 	end
 end
 
@@ -319,6 +375,7 @@ def main_menu
   puts "R. Verify an element of a set"
   puts "S. Remove an element from a list"
   puts "T. Set an element of a list"
+  puts "U. Pop an element off the front of a list"
   puts "Q. Quit"
 end
 
@@ -362,6 +419,8 @@ def execute_command(command)
   	listRemove
   when "T"
   	listSet
+  when "U"
+  	listPop
   when "Q"
     puts "Quitting... buh-bye."
   else
