@@ -14,10 +14,20 @@ require 'json'
 def listAll
 
 	zoos = @db.collection 'zoos'
-	allZoos = zoos.find()
+	allZoos = zoos.find
+	puts "Zoos:"
 	allZoos.each do |zoo|
-		puts "#{zoo.to_json}"
+		puts "Zoo #{zoo['name']}"
 	end
+
+	puts "Habitats:"
+	habitats = @db.collection 'habitats'
+	allhabitats = habitats.find({}, :fields => ["name","description"])
+	allhabitats.each do |habitat|
+		puts "\nName: #{habitat['name']}\nDescription: #{habitat['description']}"
+	end
+
+	puts "Animals:"
 end
 
 listAll
