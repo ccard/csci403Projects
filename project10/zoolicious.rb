@@ -1,8 +1,9 @@
-#! usr/bin/env ruby
+#! /usr/bin/env ruby
 #Chris Card
 
 require 'mongo'
 require 'uri'
+require 'json'
 
 MONGO_URL='mongodb://junk@humanoriented.com:wuwnosql403@staff.mongohq.com:10033/zoolicious'
 db = URI.parse(ENV[MONGO_URL])
